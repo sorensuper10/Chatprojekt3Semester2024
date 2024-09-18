@@ -1,4 +1,4 @@
-package com.example.chatprojekt3semester2024;
+package com.example.chatprojekt3semester2024.model;
 
 public class User {
 

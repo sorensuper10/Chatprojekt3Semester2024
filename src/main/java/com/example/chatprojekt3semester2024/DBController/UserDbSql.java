@@ -1,5 +1,6 @@
-package com.example.chatprojekt3semester2024;
+package com.example.chatprojekt3semester2024.DBController;
 
+import com.example.chatprojekt3semester2024.model.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,26 @@ public class UserDbSql {
 
     public UserDbSql(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    // Opretter en bruger i databasen
+    public void createUser(User user) {
+        try {
+            String sql = "INSERT INTO login (username, password) VALUES (?, ?)";
+            jdbcTemplate.update(sql, user.getUsername(), user.getPassword());
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Fejl under oprettelse af bruger", e);
+        }
+    }
+
+    // Sletter en bruger fra databasen
+    public void deleteUser(Long id) {
+        try {
+            String sql = "DELETE FROM login WHERE userid = ?";
+            jdbcTemplate.update(sql, id);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Fejl under sletning af bruger", e);
+        }
     }
 
     // Finder en bruger i databasen baseret på username og adgangskode til login
