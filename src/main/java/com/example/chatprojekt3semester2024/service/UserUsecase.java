@@ -5,6 +5,8 @@ import com.example.chatprojekt3semester2024.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserUsecase {
 
@@ -14,6 +16,15 @@ public class UserUsecase {
     public void createUser(User user) {
         userDbSql.createUser(user);
     }
+
+    public void updateUser(User user) {
+            userDbSql.updateUser(user);
+    }
+
+    public Optional<User> findUserByID(Long id) {
+        return userDbSql.findUserByID(id);
+    }
+
 
     public void deleteUser(Long id) {
         userDbSql.deleteUser(id);
