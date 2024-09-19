@@ -1,7 +1,10 @@
 package com.example.chatprojekt3semester2024.ChatServer;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
@@ -26,7 +29,7 @@ public class ClientHandler implements Runnable {
             String message;
             while ((message = in.readLine()) != null) {
                 System.out.println("Received from " + clientId + ": " + message);
-                handleMessage(message);
+                ChatServer.broadcastMessage(clientId + ": " + message, this);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,37 +46,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // Håndtering af modtaget besked fra klienten
-    private void handleMessage(String message) {
-        String[] messageParts = message.split("\\|");
-        String senderId = messageParts[0];
-        String timestamp = messageParts[1];
-        String messageType = messageParts[2];
-        String content = messageParts[3];
-
-        switch (messageType) {
-            case "TEXT":
-                // Broadcast beskeden til alle andre klienter
-                String formattedMessage = "[" + timestamp + "] " + senderId + ": " + content;
-                ChatServer.broadcastMessage(formattedMessage, this);
-                break;
-
-            case "UNICAST":
-                // Send beskeden til en specifik klient
-                String recipientId = messageParts[4];
-                ChatServer.unicastMessage("[" + timestamp + "] " + senderId + ": " + content, recipientId);
-                break;
-
-            default:
-                System.out.println("Unknown message type: " + messageType);
-        }
-    }
-
     public void sendMessage(String message) {
         out.println(message);
-    }
-
-    public String getClientId() {
-        return clientId;
     }
 }
