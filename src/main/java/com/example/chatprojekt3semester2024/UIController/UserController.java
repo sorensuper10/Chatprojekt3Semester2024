@@ -1,5 +1,6 @@
 package com.example.chatprojekt3semester2024.UIController;
 
+import com.example.chatprojekt3semester2024.ChatServer.ChatClient;
 import com.example.chatprojekt3semester2024.model.User;
 import com.example.chatprojekt3semester2024.service.UserUsecase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,20 @@ public class UserController {
     public String findLogin(@ModelAttribute User user, Model model, HttpSession session) {
         User authenticatedUser = userUsecase.findLogin(user.getUsername(), user.getPassword());
         if (authenticatedUser != null) {
-            // Gem brugeren i sessionen
             session.setAttribute("currentUser", authenticatedUser);
-            return "redirect:/menu";  // Redirecter til menu-siden
+
+            // Start klientforbindelse til chatserveren
+            new Thread(() -> {
+                // Sæt serverens IP-adresse her
+                String serverIpAddress = "192.168.0.100"; // Udskift med serverens faktiske IP-adresse
+                ChatClient client = new ChatClient(serverIpAddress, 1234, authenticatedUser.getUsername());
+                // Ingen client.start() nødvendig, da klienten starter automatisk i konstruktøren
+            }).start();
+
+            return "redirect:/chat-room";
         } else {
-            // Tilføj en fejlbesked, der vises på login-siden
             model.addAttribute("error", "Ugyldig email eller kodeord");
-            return "login";  // Bliver på login-siden med fejlmeddelelse
+            return "login";
         }
     }
 
@@ -63,5 +71,16 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "login";
+    }
+
+    @GetMapping("/chat-room")
+    public String chatRoom(Model model, HttpSession session) {
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser != null) {
+            model.addAttribute("username", currentUser.getUsername());
+            return "chat-room"; // Returnér HTML-siden til chatten
+        } else {
+            return "redirect:/login";
+        }
     }
 }
