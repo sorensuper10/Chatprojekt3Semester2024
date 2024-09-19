@@ -1,13 +1,16 @@
 package com.example.chatprojekt3semester2024.ChatServer;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ChatServer {
     private static Set<ClientHandler> clientHandlers = new HashSet<>();
 
     public static void main(String[] args) {
-        int port = 1234; // Porten som serveren lytter på
+        int port = 1234; // Porten som serveren vil lytte på
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Chat server started on port " + port);
 
@@ -23,19 +26,10 @@ public class ChatServer {
         }
     }
 
-    // Broadcast til alle klienter
+    // Broadcast beskeder til alle klienter
     public static void broadcastMessage(String message, ClientHandler excludeUser) {
         for (ClientHandler clientHandler : clientHandlers) {
             if (clientHandler != excludeUser) {
-                clientHandler.sendMessage(message);
-            }
-        }
-    }
-
-    // Unicast til en specifik klient
-    public static void unicastMessage(String message, String recipientId) {
-        for (ClientHandler clientHandler : clientHandlers) {
-            if (clientHandler.getClientId().equals(recipientId)) {
                 clientHandler.sendMessage(message);
             }
         }

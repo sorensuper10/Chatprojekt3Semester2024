@@ -1,9 +1,10 @@
 package com.example.chatprojekt3semester2024.ChatServer;
 
-import java.io.*;
-import java.net.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class ChatClient {
     private Socket socket;
@@ -13,7 +14,7 @@ public class ChatClient {
 
     public ChatClient(String host, int port, String clientId) {
         try {
-            this.socket = new Socket(host, port); // Forbind til serveren via IP-adresse
+            this.socket = new Socket(host, port);
             this.clientId = clientId;
 
             this.out = new PrintWriter(socket.getOutputStream(), true);
@@ -38,11 +39,9 @@ public class ChatClient {
         }
     }
 
-    // Send beskeder til serveren i det specificerede format
-    public void sendMessage(String messageContent, String messageType) {
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-        String formattedMessage = clientId + "|" + timestamp + "|" + messageType + "|" + messageContent;
-        out.println(formattedMessage);
+    // Send beskeder til serveren
+    public void sendMessage(String message) {
+        out.println(message);
     }
     public void sendFile(String filePath) {
         File file = new File(filePath);
