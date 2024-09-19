@@ -44,4 +44,34 @@ public class ChatClient {
         String formattedMessage = clientId + "|" + timestamp + "|" + messageType + "|" + messageContent;
         out.println(formattedMessage);
     }
+    public void sendFile(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists() || !file.isFile()) {
+            System.out.println("File does not exist.");
+
+        }
+        try (Socket fileSocket = new Socket("localhost", 5000);
+             FileInputStream fileInputStream = new FileInputStream(file);
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+             OutputStream outputStream = fileSocket.getOutputStream();
+             PrintWriter printWriter = new PrintWriter(outputStream, true)) {
+
+            // Send metadata (filnavn og filstørrelse)
+            printWriter.println(file.getName());
+            printWriter.println(file.length());
+
+            // Send fildata
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = bufferedInputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.flush();
+            System.out.println("File has been sent.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

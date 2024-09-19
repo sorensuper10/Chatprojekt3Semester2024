@@ -31,6 +31,10 @@
 </head>
 <body>
 
+    <form action="/upload-file" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <button type="submit">Upload File</button>
+    </form>
 
 <div class="chat-container">
     <h2>Velkommen til chatten, {{ username }}</h2>

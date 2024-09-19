@@ -25,8 +25,13 @@ public class ClientHandler implements Runnable {
 
             String message;
             while ((message = in.readLine()) != null) {
-                System.out.println("Received from " + clientId + ": " + message);
-                handleMessage(message);
+                if (message.equals("SEND_FILE")) {
+                    receiveFile();
+
+                }else {
+                    System.out.println("Received from " + clientId + ": " + message);
+                    handleMessage(message);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,7 +46,9 @@ public class ClientHandler implements Runnable {
             ChatServer.removeClient(this);
             System.out.println(clientId + " has left the chat.");
         }
+
     }
+
 
     // Håndtering af modtaget besked fra klienten
     private void handleMessage(String message) {
@@ -75,5 +82,40 @@ public class ClientHandler implements Runnable {
 
     public String getClientId() {
         return clientId;
+    }
+    private void receiveFile() {
+        try (Socket fileSocket = new Socket(socket.getInetAddress(), 5000)) {
+            InputStream inputStream = fileSocket.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String filename = bufferedReader.readLine();
+            long fileSize = Long.parseLong(bufferedReader.readLine());
+
+            String outputFilePath = "ServerFiles/" + filename;
+            try (FileOutputStream fileOutputStream = new FileOutputStream(outputFilePath);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream)) {
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            long totalBytesRead = 0;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1);
+            bufferedOutputStream.write(buffer, 0,bytesRead);
+            totalBytesRead += bytesRead;
+
+            if (totalBytesRead >= fileSize) {
+
+            }
+            bufferedOutputStream.flush();
+                System.out.println("file received" + outputFilePath);
+
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
