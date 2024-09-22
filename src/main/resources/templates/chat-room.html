@@ -73,11 +73,11 @@
         messageBox.value += emoji;
     }
 
-    sendButton.addEventListener('click', function() {
+    // Funktion til at sende beskeder
+    function sendMessage() {
         const message = messageBox.value;
         if (message.trim() !== '') {
             // Send besked til din chat-server via en simpel POST-forespørgsel (eller via en socket)
-            // For at sende til socket, skal du etablere en Socket-forbindelse i klienten
             fetch('/send-message', {
                 method: 'POST',
                 headers: {
@@ -92,8 +92,21 @@
             chatWindow.appendChild(messageElement);
 
             messageBox.value = ''; // Ryd tekstfeltet
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll til bunden af chatten
+        }
+    }
+
+    // Event listener for send-knappen
+    sendButton.addEventListener('click', sendMessage);
+
+    // Event listener for "Enter"-tasten
+    messageBox.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Forhindrer, at enter laver en ny linje
+            sendMessage(); // Sender beskeden
         }
     });
+
 </script>
 
 </body>
