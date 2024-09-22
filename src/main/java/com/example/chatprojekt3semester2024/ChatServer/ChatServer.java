@@ -10,7 +10,7 @@ public class ChatServer {
     private static Set<ClientHandler> clientHandlers = new HashSet<>();
 
     public static void main(String[] args) {
-        int port = 1234; // Porten som serveren vil lytte på
+        int port = 8081; // Porten som serveren vil lytte på
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Chat server started on port " + port);
 

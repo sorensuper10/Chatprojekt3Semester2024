@@ -31,7 +31,7 @@ public class UserController {
 
             // Opret en ny tråd til klientforbindelsen til chatserveren
             new Thread(() -> {
-                ChatClient client = new ChatClient("localhost", 1234, authenticatedUser.getUsername());
+                ChatClient client = new ChatClient("localhost", 8081, authenticatedUser.getUsername());
                 // Ingen client.start() nødvendig, da klienten allerede starter i konstruktøren
             }).start();
 

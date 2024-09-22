@@ -27,18 +27,35 @@
             color: white;
             border: none;
         }
+        .emoji-button {
+            font-size: 20px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <form action="/upload-file" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" />
-        <button type="submit">Upload File</button>
-    </form>
+<form action="/upload-file" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload File</button>
+</form>
 
 <div class="chat-container">
     <h2>Velkommen til chatten, {{ username }}</h2>
     <div id="chat-window"></div>
+
+    <!-- Emoji buttons -->
+    <div id="emoji-bar">
+        <button class="emoji-button" onclick="addEmoji('😂')">😂</button>
+        <button class="emoji-button" onclick="addEmoji('❤️')">❤️</button>
+        <button class="emoji-button" onclick="addEmoji('👍')">👍</button>
+        <button class="emoji-button" onclick="addEmoji('🎉')">🎉</button>
+        <button class="emoji-button" onclick="addEmoji('😢')">😢</button>
+        <button class="emoji-button" onclick="addEmoji('🙏')">🙏</button>
+    </div>
 
     <input type="text" id="message-box" placeholder="Skriv din besked her..." />
     <button id="send-button">Send</button>
@@ -50,6 +67,11 @@
     const sendButton = document.getElementById('send-button');
     const messageBox = document.getElementById('message-box');
     const chatWindow = document.getElementById('chat-window');
+
+    // Funktion til at tilføje emojis til beskedfeltet
+    function addEmoji(emoji) {
+        messageBox.value += emoji;
+    }
 
     sendButton.addEventListener('click', function() {
         const message = messageBox.value;

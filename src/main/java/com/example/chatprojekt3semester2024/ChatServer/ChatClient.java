@@ -1,9 +1,6 @@
 package com.example.chatprojekt3semester2024.ChatServer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ChatClient {
@@ -41,15 +38,21 @@ public class ChatClient {
 
     // Send beskeder til serveren
     public void sendMessage(String message) {
-        out.println(message);
+        // Tilføj emoji til beskeden
+        String emojiLaugh = "\u1F602"; // Emoji: Græder af grin 😂
+        String fullMessage = message + " " + emojiLaugh; // Kombiner besked med emoji
+
+        // Send besked til serveren
+        out.println(fullMessage);
     }
+
     public void sendFile(String filePath) {
         File file = new File(filePath);
         if (!file.exists() || !file.isFile()) {
             System.out.println("File does not exist.");
 
         }
-        try (Socket fileSocket = new Socket("localhost", 5000);
+        try (Socket fileSocket = new Socket("localhost", 8081);
              FileInputStream fileInputStream = new FileInputStream(file);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
              OutputStream outputStream = fileSocket.getOutputStream();
